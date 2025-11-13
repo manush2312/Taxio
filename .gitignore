@@ -1,0 +1,26 @@
+# Build artifacts
+build/
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+
+# Go tooling cache
+.cache/
+
+# Coverage / reports
+*.out
+coverage.*
+
+# Logs
+*.log
+
+# Editor / OS noise
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
