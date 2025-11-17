@@ -37,7 +37,7 @@ func main() {
 
 	// http.ListenAndServe(httpAddr, nil) // ! this starts HTTP server on the specified address and "nil" means we are using the default ServeMux
 
-	mux.HandleFunc("/trip/preview", handleTripPreview) // registering the trip preview handler with the custom multiplexer
+	mux.HandleFunc("POST /trip/preview", handleTripPreview) // registering the trip preview handler with the custom multiplexer
 
 	/*
 		Why create an http.Server instead of http.ListenAndServe?

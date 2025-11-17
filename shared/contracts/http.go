@@ -1,5 +1,7 @@
 package contracts
 
+// ! This file defines your standard API response format, which all your microservices and API Gateway will use.
+
 // APIResponse is the response structure for the API.
 type APIResponse struct {
 	Data  any       `json:"data,omitempty"`
