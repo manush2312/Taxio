@@ -17,6 +17,13 @@ var (
 func main() {
 	log.Println("Starting API Gateway")
 
+	/*
+		! Creating a custom HTTP multiplexer (router) instead of using the default one.
+		! Reasons:
+			! 1. Customization: Allows for more control over routing behavior.
+			! 2. Middleware Integration: Easier to add middleware for logging, authentication, etc.
+			! 3. Scalability: Better suited for complex applications with many routes.
+	*/
 	mux := http.NewServeMux() //  creating a new HTTP request multiplexer (router)
 
 	/*
@@ -30,11 +37,19 @@ func main() {
 
 	// http.ListenAndServe(httpAddr, nil) // ! this starts HTTP server on the specified address and "nil" means we are using the default ServeMux
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("Hello from API Gateway"))
-	})
+	mux.HandleFunc("/trip/preview", handleTripPreview) // registering the trip preview handler with the custom multiplexer
 
+	/*
+		Why create an http.Server instead of http.ListenAndServe?
+
+		Because with http.Server, you can later add:
+		✔️ Timeouts
+		✔️ TLS support
+		✔️ Graceful shutdown
+		✔️ Read/write timeouts
+		✔️ Max header size
+		✔️ Idle connection timeout
+	*/
 	server := &http.Server{
 		Addr:    httpAddr,
 		Handler: mux,
