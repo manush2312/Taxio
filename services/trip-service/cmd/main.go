@@ -2,9 +2,11 @@ package main
 
 import (
 	"context"
+	"log"
 	"ride-sharing/services/trip-service/internal/domain"
 	"ride-sharing/services/trip-service/internal/infrastructure/repository"
 	"ride-sharing/services/trip-service/internal/service"
+	"time"
 )
 
 func main() {
@@ -21,5 +23,15 @@ func main() {
 		TotalPriceInCents: 1500.0,
 	}
 
-	svc.CreateTrip(ctx, fare) // creating a trip with the given fare
+	t, err := svc.CreateTrip(ctx, fare) // creating a trip with the given fare
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println(t)
+
+	// keeping the service alive for demonstration purposes
+	for {
+		time.Sleep(time.Second)
+	}
 }
