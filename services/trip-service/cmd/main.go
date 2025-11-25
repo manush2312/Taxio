@@ -1,10 +1,8 @@
 package main
 
 import (
-	"context"
 	"log"
 	"net/http"
-	"ride-sharing/services/trip-service/internal/domain"
 	h "ride-sharing/services/trip-service/internal/infrastructure/http"
 	"ride-sharing/services/trip-service/internal/infrastructure/repository"
 	"ride-sharing/services/trip-service/internal/service"
@@ -13,23 +11,23 @@ import (
 func main() {
 	// Entry point of the trip-service application
 
-	ctx := context.Background()
+	// ctx := context.Background()
 
 	inmemRepo := repository.NewInmemRepository() // using in-memory repository for now, or creating a temporary DB
 	svc := service.NewService(inmemRepo)         // creating a service layer and injecting the in-memory repository
 
-	fare := &domain.RideFareModel{
-		UserID:            "42",
-		PackageSlug:       "sedan",
-		TotalPriceInCents: 1500.0,
-	}
+	// fare := &domain.RideFareModel{
+	// 	UserID:            "42",
+	// 	PackageSlug:       "sedan",
+	// 	TotalPriceInCents: 1500.0,
+	// }
 
-	t, err := svc.CreateTrip(ctx, fare) // creating a trip with the given fare
-	if err != nil {
-		log.Println(err)
-	}
+	// t, err := svc.CreateTrip(ctx, fare) // creating a trip with the given fare
+	// if err != nil {
+	// 	log.Println(err)
+	// }
 
-	log.Println(t)
+	// log.Println(t)
 
 	// ! keeping the service alive for demonstration purposes
 	// for {
@@ -37,8 +35,11 @@ func main() {
 	// }
 
 	// starting the HTTP server for handling trip preview requests
+	httpHandler := &h.HttpHandler{
+		Service: svc,
+	}
 	mux := http.NewServeMux()
-	mux.HandleFunc("POST /preview", h.HandleTripPreview)
+	mux.HandleFunc("POST /preview", httpHandler.HandleTripPreview)
 	server := &http.Server{
 		Addr:    ":8083",
 		Handler: mux,
