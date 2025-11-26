@@ -35,6 +35,20 @@ func main() {
 	// }
 
 	// starting the HTTP server for handling trip preview requests
+	/*
+		! You create an HttpHandler struct and inject your TripService into it.
+		! Your HTTP layer (handlers) must call business logic (services).
+		! But handlers should not create services themselves.
+
+		! flow in clean architecture:
+			main.go → constructs dependencies
+			↓
+			HttpHandler → uses the service
+			↓
+			Service → uses repository
+			↓
+			Repository → talks to DB
+	*/
 	httpHandler := &h.HttpHandler{
 		Service: svc,
 	}

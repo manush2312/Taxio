@@ -10,6 +10,7 @@ import (
 	"ride-sharing/shared/types"
 )
 
+// A struct that holds TripService.
 type HttpHandler struct {
 	Service domain.TripService
 }
@@ -28,15 +29,15 @@ func (s *HttpHandler) HandleTripPreview(w http.ResponseWriter, r *http.Request) 
 	}
 	defer r.Body.Close()
 
-	fare := &domain.RideFareModel{
-		UserID:            "42",
-		PackageSlug:       "sedan",
-		TotalPriceInCents: 1500.0,
-	}
+	// fare := &domain.RideFareModel{
+	// 	UserID:            "42",
+	// 	PackageSlug:       "sedan",
+	// 	TotalPriceInCents: 1500.0,
+	// }
 
 	ctx := r.Context()
 
-	t, err := s.Service.CreateTrip(ctx, fare) // creating a trip with the given fare
+	t, err := s.Service.GetRoute(ctx, &requestBody.Pickup, &requestBody.Destination) // creating a trip with the given fare
 	if err != nil {
 		log.Println(err)
 	}
