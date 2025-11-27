@@ -3,8 +3,13 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"ride-sharing/shared/env"
 )
@@ -55,7 +60,38 @@ func main() {
 		Handler: mux,
 	}
 
-	if err := server.ListenAndServe(); err != nil {
-		log.Printf("HTTP server error: %v", err)
+	// if err := server.ListenAndServe(); err != nil {
+	// 	log.Printf("HTTP server error: %v", err)
+	// }
+
+	//! implementing graceful shutdown
+	serverErrors := make(chan error, 1)
+
+	go func() {
+		log.Printf("server(HTTP) listening on %s", httpAddr)
+		serverErrors <- server.ListenAndServe()
+	}()
+
+	shutdown := make(chan os.Signal, 1) // Whenever the process receives SIGINT or SIGTERM, send that signal into the shutdown channel
+	// ! os.Interrupt --> this signal is sent when the user types Ctrl+C
+	// ! syscall.SIGTERM --> this signal is sent by Kubernetes when it wants to terminate the application
+	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM) // this is allows us to listen the signals that are coming outside of our application
+
+	select {
+	case err := <-serverErrors:
+		log.Printf("Error starting the server: %v", err)
+
+	case sig := <-shutdown:
+		log.Printf("Server is shutting down due to signal: %v", sig)
+
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+
+		// server you have up to 10 seconds to finish any in-flight requests and close cleanly. If you don’t finish in that time, we’ll force-close.
+		if err := server.Shutdown(ctx); err != nil {
+			log.Printf("Could not gracefully shutdown the server: %v", err)
+			server.Close()
+		}
+
 	}
 }

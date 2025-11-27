@@ -8,9 +8,11 @@ import (
 	"log"
 	"net/http"
 	"ride-sharing/shared/contracts"
+	"time"
 )
 
 func handleTripPreview(w http.ResponseWriter, r *http.Request) {
+	time.Sleep(time.Second * 9)
 
 	var reqBody previewTripRequest
 	// unmarshal the JSON request body into the reqBody struct, according to the previewTripRequest type defined in types.go
