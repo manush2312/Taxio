@@ -1,6 +1,6 @@
 package main
 
-// this file contains the web socket handlers for drivers and riders
+// this file contains the web socket handlers for drivers and riders, basically this is websocket transport layer for the gateway
 
 import (
 	"log"

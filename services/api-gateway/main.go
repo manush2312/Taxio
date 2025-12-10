@@ -42,7 +42,7 @@ func main() {
 
 	// http.ListenAndServe(httpAddr, nil) // ! this starts HTTP server on the specified address and "nil" means we are using the default ServeMux
 
-	mux.HandleFunc("POST /trip/preview", handleTripPreview) // registering the trip preview handler with the custom multiplexer
+	mux.HandleFunc("POST /trip/preview", enableCORS(handleTripPreview)) // registering the trip preview handler with the custom multiplexer
 	// ! web socket handlers
 	mux.HandleFunc("/ws/drivers", handleDriversWebSocket)
 	mux.HandleFunc("/ws/riders", handleRidersWebSocket)
